@@ -1,5 +1,5 @@
 import React from 'react'
-import AddTask from './addTask'
+import AddTask from './AddTask'
 
 export const metadata = {
     title: "Add Task"
