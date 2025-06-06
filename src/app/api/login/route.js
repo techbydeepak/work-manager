@@ -43,10 +43,13 @@ if (!process.env.JWT_KEY) {
     })
 
 
-    response.cookies.set("authToken", token,{
-      maxAge: 60 * 60 * 24,
-         // httpOnly: true,  // comment out for testing in browser
-    })
+    response.cookies.set("authToken", token, {
+  maxAge: 60 * 60 * 24,
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+});
+
     console.log(user);
     console.log(token);
 
