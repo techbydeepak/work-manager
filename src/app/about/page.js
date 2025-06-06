@@ -8,7 +8,7 @@ import { resolve } from "styled-jsx/css"
 export default async function About() {
     
     await takeTime();
-    throw new Error("This is manual error");
+    // throw new Error("This is manual error");
     return(
         <div>
             This is about page
