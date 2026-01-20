@@ -48,7 +48,7 @@ export async function PUT(request,{params}){
 }
 
 export async function DELETE(request,{params}){
-    const {taskId} = params;
+    const {taskId} = await params;
 
     try {
        await Task.deleteOne({
