@@ -1,11 +1,13 @@
 "use client";
 
 import { addTask } from "@/services/taskService";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import UserContext from "../context/userContext";
 
 function AddTask() {
   const [mounted, setMounted] = useState(false);
+  const context = useContext(UserContext);
 
   useEffect(() => {
     setMounted(true);
@@ -15,24 +17,39 @@ function AddTask() {
     title: "",
     content: "",
     status: "",
-    userId: "67fced6f0f234003e66f1309",
+    userId: "",
   });
+
+  // ✅ userId ko logged-in user se set karna (hardcoded hata diya)
+  useEffect(() => {
+    if (context?.user?._id) {
+      setTask((prev) => ({ ...prev, userId: context.user._id }));
+    }
+  }, [context?.user]);
 
   const handleAddTask = async (event) => {
     event.preventDefault();
 
+    // ✅ agar userId nahi hai to add task mat karo
+    if (!task.userId) {
+      toast.error("Please login again!", { position: "top-center" });
+      return;
+    }
+
     try {
       const result = await addTask(task);
       console.log(result);
+
       toast.success("Task added successfully", {
         position: "top-center",
       });
 
+      // ✅ reset (userId same rahe)
       setTask({
         title: "",
         content: "",
         status: "",
-        userId: "67fced6f0f234003e66f1309",
+        userId: context?.user?._id || "",
       });
     } catch (error) {
       console.log(error);
@@ -54,7 +71,10 @@ function AddTask() {
         <form className="space-y-6">
           {/* Title */}
           <div>
-            <label htmlFor="task_title" className="block text-sm font-medium mb-1 text-gray-300">
+            <label
+              htmlFor="task_title"
+              className="block text-sm font-medium mb-1 text-gray-300"
+            >
               Title
             </label>
             <input
@@ -70,7 +90,10 @@ function AddTask() {
 
           {/* Content */}
           <div>
-            <label htmlFor="task_content" className="block text-sm font-medium mb-1 text-gray-300">
+            <label
+              htmlFor="task_content"
+              className="block text-sm font-medium mb-1 text-gray-300"
+            >
               Content
             </label>
             <textarea
@@ -85,7 +108,10 @@ function AddTask() {
 
           {/* Status */}
           <div>
-            <label htmlFor="task_status" className="block text-sm font-medium mb-1 text-gray-300">
+            <label
+              htmlFor="task_status"
+              className="block text-sm font-medium mb-1 text-gray-300"
+            >
               Status
             </label>
             <select
@@ -122,7 +148,7 @@ function AddTask() {
                   title: "",
                   content: "",
                   status: "",
-                  userId: "67fced6f0f234003e66f1309",
+                  userId: context?.user?._id || "",
                 })
               }
             >
