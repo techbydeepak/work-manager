@@ -5,23 +5,23 @@ import jwt from "jsonwebtoken";
 
 export async function POST(request) {
   const { email, password } = await request.json();
-// 1 Get Request
+
   try {
-    const user = await User.findOne({
-      email: email,
-    });
+    const user = await User.findOne({ email: email });
+
     if (user == null) {
       throw new Error("user not found");
     }
-//  2 Password match
+
     const matched = await bcrypt.compare(password, user.password);
     if (!matched) {
       throw new Error("password is incorrect");
     }
-// 3 Assign Token
-if (!process.env.JWT_KEY) {
-  throw new Error("JWT key is missing in environment");
-}
+
+    if (!process.env.JWT_KEY) {
+      throw new Error("JWT key is missing in environment");
+    }
+
     const token = jwt.sign(
       {
         _id: user._id,
@@ -29,26 +29,21 @@ if (!process.env.JWT_KEY) {
       },
       process.env.JWT_KEY
     );
-    if (!process.env.JWT_KEY) {
-      throw new Error("JWT key is missing in environment");
-    }
-
-
-    // 4 create nextResponse - cookies
 
     const response = NextResponse.json({
-        message: "Login Success",
-        success : true,
-        user:user,
-    })
+      message: "Login Success",
+      success: true,
+      user: user,
+    });
 
+    const isProduction = process.env.NODE_ENV === "production"; // ✅ THIS WAS MISSING
 
     response.cookies.set("authToken", token, {
-  maxAge: 60 * 60 * 24,
-  httpOnly: true,
-  secure: isProduction,
-  sameSite: isProduction ? "none" : "lax",
-});
+      maxAge: 60 * 60 * 24,
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+    });
 
     console.log(user);
     console.log(token);
@@ -65,5 +60,4 @@ if (!process.env.JWT_KEY) {
       }
     );
   }
-  
 }
