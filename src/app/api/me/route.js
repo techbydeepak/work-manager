@@ -1,4 +1,4 @@
-// src/app/api/current/route.js
+// src/app/api/me/route.js
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDb } from "@/helper/db";
@@ -24,7 +24,7 @@ export async function GET(request) {
 
     return NextResponse.json({ success: true, user });
   } catch (err) {
-    console.log("Error in /api/current:", err.message);
+    console.log("Error in /api/me:", err.message);
     const response = NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
     response.cookies.set("authToken", "", { maxAge: 0 });
     return response;

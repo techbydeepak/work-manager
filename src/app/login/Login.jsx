@@ -23,7 +23,7 @@ export default function Login() {
   useEffect(() => {
     async function checkUser() {
       try {
-        const res = await fetch("/api/current", { credentials: "include" });
+        const res = await fetch("/api/me", { credentials: "include" });
 
         const result = await res.json();
         if (result.success) {
