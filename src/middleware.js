@@ -1,38 +1,55 @@
 import { NextResponse } from "next/server";
 
-
-
 export async function middleware(request) {
+
   console.log("✅ Middleware executed");
 
   const authToken = request.cookies.get("authToken")?.value;
   const pathname = request.nextUrl.pathname;
 
-  const isAuthPage = pathname === "/api/login" || pathname === "/api/users";
-
-  // ✅ If logged-in user tries to access login/signup → redirect to profile
-  if (isAuthPage && authToken) {
-    return NextResponse.redirect(new URL("/", request.url));
+  // 🚫 Skip all API routes
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
   }
 
-  // ✅ If unauthenticated user tries to access secure routes
-  const protectedPaths = ["/add-task", "/show-task", "/profile/user"];
+  // Protected frontend routes
+  const protectedPaths = [
+    "/add-task",
+    "/show-task",
+    "/profile/user",
+  ];
+
   const isProtectedPath = protectedPaths.includes(pathname);
 
+  // Redirect unauthenticated users
   if (isProtectedPath && !authToken) {
-    console.log("❌ No authToken found in cookies for protected route");
-    return NextResponse.redirect(new URL("/login", request.url));
+
+    console.log("❌ No authToken found");
+
+    return NextResponse.redirect(
+      new URL("/login", request.url)
+    );
   }
 
+  // Redirect logged-in users away from login/signup
+  const authPages = ["/login", "/signup"];
 
-  // ✅ Log if token is found
-  if (authToken) {
-    console.log("✅ Token found:", authToken);
+  if (authPages.includes(pathname) && authToken) {
+    return NextResponse.redirect(
+      new URL("/", request.url)
+    );
   }
 
-  return NextResponse.next(); // continue normally
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/api/:path*", "/login", "/signup", "/add-task", "/show-task", "/profile/user"],
+  matcher: [
+    "/",
+    "/login",
+    "/signup",
+    "/add-task",
+    "/show-task",
+    "/profile/user",
+  ],
 };
