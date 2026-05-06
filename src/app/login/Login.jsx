@@ -44,7 +44,9 @@ export default function Login() {
       const result = await login(data);
       toast.success("Logged in successfully! 🚀", { position: "top-center" });
       context.setUser(result.user);
+      setTimeout(() => {
       router.push("/");
+    }, 300);
     } catch (error) {
       const message =
         error?.response?.data?.message ||

@@ -27,7 +27,7 @@ export async function POST(request) {
         _id: user._id,
         name: user.name,
       },
-      process.env.JWT_KEY
+      process.env.JWT_KEY,
     );
 
     const response = NextResponse.json({
@@ -42,7 +42,8 @@ export async function POST(request) {
       maxAge: 60 * 60 * 24,
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      sameSite: "lax",
+      path: "/",
     });
 
     console.log(user);
@@ -57,7 +58,7 @@ export async function POST(request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
