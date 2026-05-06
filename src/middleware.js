@@ -45,11 +45,10 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    "/",
-    "/login",
-    "/signup",
     "/add-task",
     "/show-task",
     "/profile/user",
+    "/login",
+    "/signup",
   ],
 };
