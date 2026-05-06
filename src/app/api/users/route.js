@@ -3,8 +3,8 @@ import { User } from "../../../models/user";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
-connectDb();
 export async function GET(request) {
+    await connectDb();
   let users = [];
   try {
     users = await User.find().select("-password");
@@ -18,6 +18,7 @@ export async function GET(request) {
   return NextResponse.json(users);
 }
 export async function POST(request) {
+    await connectDb();
   // fetch user details from request
 
   const { name, email, password, about, profileURL } = await request.json();
